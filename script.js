@@ -263,3 +263,55 @@ window.addEventListener('load', () => {
         }
     });
 }); 
+
+// Testimonials auto-scroll carousel
+const testimonialSlides = document.querySelectorAll('.testimonial');
+const testimonialIndicators = document.querySelectorAll('.testi-indicator');
+const testimonialsSlideshow = document.querySelector('.testimonials-slideshow');
+let currentTestimonial = 0;
+let testimonialInterval;
+
+function showTestimonial(index) {
+    if (testimonialSlides.length === 0) return;
+    testimonialSlides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+        if (testimonialIndicators[i]) {
+            testimonialIndicators[i].classList.toggle('active', i === index);
+        }
+    });
+    currentTestimonial = index;
+}
+
+function nextTestimonial() {
+    let next = (currentTestimonial + 1) % testimonialSlides.length;
+    showTestimonial(next);
+}
+
+function startTestimonials() {
+    stopTestimonials();
+    testimonialInterval = setInterval(nextTestimonial, 5000);
+}
+
+function stopTestimonials() {
+    if (testimonialInterval) clearInterval(testimonialInterval);
+}
+
+if (testimonialSlides.length > 0) {
+    showTestimonial(0);
+    startTestimonials();
+
+    if (testimonialsSlideshow) {
+        testimonialsSlideshow.addEventListener('mouseenter', stopTestimonials);
+        testimonialsSlideshow.addEventListener('mouseleave', startTestimonials);
+    }
+
+    if (testimonialIndicators.length > 0) {
+        testimonialIndicators.forEach((indicator, i) => {
+            indicator.addEventListener('click', () => {
+                stopTestimonials();
+                showTestimonial(i);
+                startTestimonials();
+            });
+        });
+    }
+} 
